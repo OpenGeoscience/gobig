@@ -17,5 +17,25 @@
  <name>io.buffer.size</name>
 <value>{{ hdfs_io_buffer_size }}</value></property>
 
-</configuration>
+{% if lookup('env', 'AWS_ACCESS_KEY_ID') != "" %}
+<property>
+ <name>fs.s3n.awsAccessKey</name>
+<value>{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}</value></property>
 
+<property>
+ <name>fs.s3.awsAccessKey</name>
+<value>{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}</value></property>
+{% endif %}
+
+{% if lookup('env', 'AWS_SECRET_ACCESS_KEY') != "" %}
+<property>
+ <name>fs.s3n.awsSecretAccessKey</name>
+<value>{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}</value></property>
+
+<property>
+ <name>fs.s3.awsSecretAccessKey</name>
+<value>{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}</value></property>
+{% endif %}
+
+
+</configuration>
