@@ -41,13 +41,11 @@
     when: do_install|bool
 
   - name: mongodb | pkg | download
-    command: >
-        curl -o
-        "{{ mongodb_install_parent }}/mongodb-{{ mongodb_version }}.tar.gz"
-        "{{ MONGO_DOWNLOAD_URL_PREFIX }}{{ mongodb_version }}.tgz"
-    args:
-        creates: >
-            {{ mongodb_install_parent }}/mongodb-{{ mongodb_version }}.tar.gz
+    get_url:
+        url: "https://fastdl.mongodb.org/linux/\
+              mongodb-linux-x86_64-{{ mongodb_version }}.tgz"
+        dest: "{{ mongodb_install_parent }}/mongodb-{{ mongodb_version }}.tar.gz"
+        force: no
     when: create_install_root|bool
 
   - name: mongodb | pkg | unpack
@@ -56,13 +54,16 @@
         creates: "{{ mongodb_install_parent }}/\
                   mongodb-linux-x86_64-{{ mongodb_version }}"
         dest: "{{ mongodb_install_parent }}"
+        mode: 0776
         src: "{{ mongodb_install_parent }}/mongodb-{{ mongodb_version }}.tar.gz"
     when: create_install_root|bool
 
   - name: mongodb | pkg | unpack | rename
-    command: "mv \"{{ mongodb_install_parent }}/\
-                       mongodb-linux-x86_64-{{ mongodb_version }}\" \
-                 \"{{ mongodb_install_root }}\""
+    shell: >
+        mv
+        "{{ mongodb_install_parent }}/\
+         mongodb-linux-x86_64-{{ mongodb_version }}"
+        "{{ mongodb_install_root }}"
     when: create_install_root|bool
     changed_when: >
         (mongodb_install_parent + "/mongodb-linux-x86_64-" + mongodb_version) !=
@@ -86,7 +87,5 @@
         path: "{{ mongodb_db }}"
         state: directory
         mode: 0755
-        owner: "{{ mongodb_user }}"
-        group: "{{ mongodb_group }}"
     when: do_install|bool
 

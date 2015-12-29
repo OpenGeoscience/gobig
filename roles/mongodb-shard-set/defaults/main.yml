@@ -1,0 +1,6 @@
+---
+
+    state: present
+    shards: []
+    mongodb_shard_router_ansible_group: ""
+

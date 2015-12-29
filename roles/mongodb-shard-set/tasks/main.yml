@@ -1,0 +1,43 @@
+---
+
+  - name: mongodb | shard set | logic flags | compute
+    set_fact:
+        do_init: >
+            {{ state == "present" }}
+        do_deinit: >
+            {{ state == "absent" }}
+
+  - name: mongodb | shard set | intialize script | generate
+    template:
+        src: shard-set-initialize.js.j2
+        dest: "{{ mongodb_data }}/shard-set-initialize.js"
+    when: do_init|bool
+
+  - name: mongodb | shard set | deintialize script | generate
+    template:
+        src: shard-set-deinitialize.js.j2
+        dest: "{{ mongodb_data }}/shard-set-deinitialize.js"
+    when: do_deinit|bool
+
+  - name: mongodb | shard set | initialize
+    command: >
+        "{{ mongodb_install_root }}/bin/mongo"
+        "--host" "{{ hostvars[mongodb_shard_router_ansible_group[0]]
+                             [mongodb_net_interface]
+                             ['ipv4']
+                             ['address'] }}"
+        "--port" "27019"
+        "{{ mongodb_data }}/shard-set-initialize.js"
+    when: do_init|bool
+
+  - name: mongodb | shard set | deinitialize
+    command: >
+        "{{ mongodb_install_root }}/bin/mongo"
+        "--host" "{{ hostvars[mongodb_shard_router_ansible_group[0]]
+                             [mongodb_net_interface]
+                             ['ipv4']
+                             ['address'] }}"
+        "--port" "27017"
+        "{{ mongodb_data }}/shard-set-deinitialize.js"
+    when: do_deinit|bool
+
