@@ -1,0 +1,19 @@
+<configuration>
+<property>
+  <name>yarn.nodemanager.aux-services</name>
+  <value>mapreduce_shuffle</value>
+</property>
+<property>
+  <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+  <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+</property>
+<property>
+  <name>yarn.resourcemanager.hostname</name>
+  <value>{% for ansible_host in groups[hdfs_namenode_ansible_group] -%}
+  {%- set ip=(hostvars[ansible_host]
+  ['ansible_' + hdfs_net_interface]
+  ['ipv4']
+  ['address']) %}{%- if not loop.first %},{% endif %}{{ ip }}{%- endfor %}</value>
+</property>
+
+</configuration>

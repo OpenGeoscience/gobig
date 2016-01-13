@@ -17,5 +17,11 @@
  <name>io.buffer.size</name>
 <value>{{ hdfs_io_buffer_size }}</value></property>
 
-</configuration>
+<property>
+<name>fs.s3n.impl</name>
+<value>org.apache.hadoop.fs.s3native.NativeS3FileSystem</value>
+<description>The FileSystem for s3n: (Native S3) uris.</description>
+</property>
 
+
+</configuration>

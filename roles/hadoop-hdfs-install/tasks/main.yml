@@ -16,6 +16,8 @@
     with_items:
       - core-site
       - hdfs-site
+      - yarn-site
+      - mapred-site
     when: do_install|bool
 
   - name: hadoop | hdfs | conf | env | set
@@ -79,4 +81,3 @@
         path: "{{ hdfs_data_root }}/namenode/formatted"
         state: touch
     when: do_format
-
