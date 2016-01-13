@@ -3,7 +3,6 @@
 dependencies:
   - role: girder-variables
   - role: mongodb-variables
-  - role: romanesco-install
   - role: user-generate
     name: "{{ girder_user }}"
     group: "{{ girder_group }}"
@@ -11,4 +10,3 @@ dependencies:
     system: true
     state: present
     when: do_install|bool
-
