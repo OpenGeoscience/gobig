@@ -1,45 +1,19 @@
 ---
-
-  - name: apt | cache | update
-    apt: update_cache=yes
-    when: do_install|bool
+  - name: girder | add | node repository
+    shell: "curl -sL https://deb.nodesource.com/setup | sudo bash -"
 
   - name: girder | deps | install
     apt: name={{ item }} state=present update_cache=yes
     with_items:
-      - apt-utils
-      - autoconf
-      - build-essential
       - curl
-      - cmake
       - g++
-      - gfortran
       - git
-      - gzip
-      - libbz2-dev
-      - libcppunit-dev
-      - libexpat-dev
       - libffi-dev
-      - libjpeg-dev
-      - libpng-dev
-      - libsqlite-dev
-      - libssl-dev
-      - libtool
-      - m4
       - make
-      - mongodb
-      - ncurses-dev
-      - openjdk-7-jdk
-      - openjdk-7-jre-headless
-      - openssh-client
-      - openssh-server
+      - python-dev
       - python-pip
-      - python-software-properties
-      - python2.7-dev
-      - rsync
-      - sudo
-      - tar
-      - wget
+      - nodejs
+
     when: do_install|bool
 
   - name: girder | service | stop
