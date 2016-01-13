@@ -54,7 +54,6 @@
         creates: "{{ mongodb_install_parent }}/\
                   mongodb-linux-x86_64-{{ mongodb_version }}"
         dest: "{{ mongodb_install_parent }}"
-        mode: 0776
         src: "{{ mongodb_install_parent }}/mongodb-{{ mongodb_version }}.tar.gz"
     when: create_install_root|bool
 
@@ -87,8 +86,6 @@
         state: directory
         mode: 0755
     when: do_install|bool
-
-
 
   - name: mongodb | db | set | permissions
     file:
