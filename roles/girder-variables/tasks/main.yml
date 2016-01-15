@@ -13,6 +13,11 @@
             {{ state == "stopped" or state == "started" or
                state == "restarted" or state == "reloaded" }}
 
+  - name: girder | venv root | default | set
+    set_fact:
+      girder_venv_root: /opt/girder/libs
+    when: girder_venv_root == ""
+
   - name: girder | install root | default | set
     set_fact:
         girder_install_root: /opt/girder/{{ girder_git_version }}

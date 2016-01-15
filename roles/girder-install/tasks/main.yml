@@ -13,7 +13,16 @@
       - python-dev
       - python-pip
       - nodejs
+      - python-virtualenv
+    when: do_install|bool
 
+  - name: grunt-cli | install
+    npm:
+        name: "{{ item }}"
+        global: yes
+    with_items:
+      - grunt
+      - grunt-cli
     when: do_install|bool
 
   - name: girder | service | stop
@@ -38,6 +47,8 @@
   - name: girder | install parent | create
     file:
         path: "{{ girder_install_parent }}"
+        owner: "{{ girder_user }}"
+        group: "{{ girder_group }}"
         state: directory
     when: do_install|bool
 
@@ -50,30 +61,42 @@
         mode: 0755
     when: do_install|bool
 
+  - name: girder | install root | create
+    file:
+        path: "{{ girder_install_root }}"
+        state: directory
+        group: "{{ girder_group }}"
+        owner: "{{ girder_user }}"
+        mode: 0755
+    when: do_install|bool
+
+  - name: girder | venv root | create
+    file:
+        path: "{{ girder_venv_root }}"
+        state: directory
+        group: "{{ girder_group }}"
+        owner: "{{ girder_user }}"
+        mode: 0755
+    when: do_install|bool
+
 
   - name: girder | repo | sync
     command: >
         rsync -avz --exclude=.git
         "{{ girder_git_work_dir }}/"
-        "{{ girder_install_root }}"
+        "{{ girder_install_root }}/"
     when: do_install|bool
+    become: yes
+    become_user: "{{ girder_user }}"
 
   - name: Install editable version of girder
     pip:
       chdir: "{{ girder_install_root }}"
+      virtualenv: "{{ girder_venv_root }}"
       extra_args: "-e"
       name: "."
-
-  - name: Install frontend assets
-    shell: "girder-install web"
-    args:
-      chdir: "{{ girder_install_root }}"
-
-  - name: girder | conf | girder.local.cfg | generate
-    template:
-        src: girder.local.cfg.j2
-        dest: "{{ girder_install_root }}/girder/conf/girder.local.cfg"
-        mode: 0644
+    become: yes
+    become_user: "{{ girder_user }}"
     when: do_install|bool
 
   - name: girder | conf | owner | set
@@ -83,3 +106,21 @@
         owner: "{{ girder_user }}"
         group: "{{ girder_group }}"
     when: do_install|bool
+
+  - name: Install frontend assets
+    shell: ". {{girder_venv_root}}/bin/activate && girder-install web"
+    args:
+      chdir: "{{ girder_install_root }}"
+    become: yes
+    become_user: "{{ girder_user }}"
+
+  - name: girder | conf | girder.local.cfg | generate
+    template:
+        src: girder.local.cfg.j2
+        dest: "{{ girder_install_root }}/girder/conf/girder.local.cfg"
+        owner: "{{ girder_user }}"
+        group: "{{ girder_group }}"
+        mode: 0644
+    when: do_install|bool
+    become: yes
+    become_user: "{{ girder_user }}"

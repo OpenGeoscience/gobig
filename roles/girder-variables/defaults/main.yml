@@ -7,6 +7,7 @@
 
     girder_install_root: ""
     girder_data_root: ""
+    girder_venv_root: ""
 
     climos_test_install_root: ""
     sparktest_install_root: ""
@@ -34,4 +35,3 @@
     girder_password_description: "Password must be at least 6 characters."
 
     state: started
-
