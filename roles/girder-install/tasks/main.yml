@@ -1,6 +1,6 @@
 ---
   - name: girder | add | node repository
-    shell: "curl -sL https://deb.nodesource.com/setup | sudo bash -"
+    shell: "curl -sL https://deb.nodesource.com/setup_4.x | sudo bash -"
 
   - name: girder | deps | install
     apt: name={{ item }} state=present update_cache=yes
