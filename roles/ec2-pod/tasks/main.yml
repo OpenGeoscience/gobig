@@ -78,6 +78,7 @@
         exact_count: "{{ (item.value.count|default(1))|int }}"
         group: ec2_pod_{{ name }}
         image: "{{ item.value.image|default(default_image) }}"
+        instance_profile_name: "{{ ec2_instance_profile_name }}"
         instance_tags:
             Name: >
                 {{ item.value.name|default(
@@ -133,4 +134,3 @@
         name: ec2_pod_{{ name }}
         state: absent
     when: do_destroy|bool
-
